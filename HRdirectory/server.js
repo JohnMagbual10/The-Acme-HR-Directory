@@ -40,7 +40,6 @@ async function updateEmployeeInDatabase(id, name, department_id) {
   // Implement your database query logic here
 }
 
-// Define your routes here
 // GET /api/employees - returns array of employees
 app.get('/api/employees', async (req, res, next) => {
   try {
