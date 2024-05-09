@@ -40,6 +40,7 @@ async function updateEmployeeInDatabase(id, name, department_id) {
   // Implement your database query logic here
 }
 
+// Define your routes here
 // GET /api/employees - returns array of employees
 app.get('/api/employees', async (req, res, next) => {
   try {
@@ -137,7 +138,9 @@ const init = async () => {
         department_id INTEGER REFERENCES departments(id)
       );
       INSERT INTO departments (name) VALUES ('HR'), ('Finance'), ('IT');
-      INSERT INTO employees (name, department_id) VALUES ('John Megaball', 1), ('Xiaojia Chin', 2), ('Tiffany Newin', 3);
+      INSERT INTO employees (name, department_id) SELECT 'John Megaball', departments.id FROM departments WHERE name = 'HR';
+      INSERT INTO employees (name, department_id) SELECT 'Xiaojia Chin', departments.id FROM departments WHERE name = 'Finance';
+      INSERT INTO employees (name, department_id) SELECT 'Tiffany Newin', departments.id FROM departments WHERE name = 'IT';
     `;
     await client.query(SQL);
     console.log('Tables created and sample data inserted');
