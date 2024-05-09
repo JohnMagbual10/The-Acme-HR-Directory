@@ -11,12 +11,40 @@ const client = new pg.Client({ connectionString: DATABASE_URL });
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Function to fetch employees from the database
+async function fetchEmployeesFromDatabase() {
+  const query = 'SELECT * FROM employees';
+  const result = await client.query(query);
+  return result.rows;
+}
+
+// Function to fetch departments from the database
+async function fetchDepartmentsFromDatabase() {
+  const query = 'SELECT * FROM departments';
+  const result = await client.query(query);
+  return result.rows;
+}
+
+// Function to create employee in the database
+async function createEmployeeInDatabase(name, department_id) {
+  // Implement your database query logic here
+}
+
+// Function to delete employee from the database
+async function deleteEmployeeFromDatabase(id) {
+  // Implement your database query logic here
+}
+
+// Function to update employee in the database
+async function updateEmployeeInDatabase(id, name, department_id) {
+  // Implement your database query logic here
+}
+
 // Define your routes here
 // GET /api/employees - returns array of employees
 app.get('/api/employees', async (req, res, next) => {
   try {
     // Fetch employees from the database
-    // Replace this with your actual database query
     const employees = await fetchEmployeesFromDatabase();
     res.json(employees);
   } catch (error) {
@@ -26,14 +54,9 @@ app.get('/api/employees', async (req, res, next) => {
 });
 
 // GET /api/departments - returns an array of departments
-app.get('/', (req, res) => {
-  res.send('Server is running');
-});
-
 app.get('/api/departments', async (req, res, next) => {
   try {
     // Fetch departments from the database
-    // Replace this with your actual database query
     const departments = await fetchDepartmentsFromDatabase();
     res.json(departments);
   } catch (error) {
@@ -91,6 +114,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
+// Initialize the server
 const init = async () => {
   try {
     console.log('Initializing server...');
@@ -129,7 +153,6 @@ const init = async () => {
     process.exit(1); // Exit with non-zero status code to indicate failure
   }
 };
-
 
 // Invoke the init function to start the server
 init();
