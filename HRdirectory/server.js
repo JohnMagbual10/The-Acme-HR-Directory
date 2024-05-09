@@ -91,7 +91,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// Initialize the server
 const init = async () => {
   try {
     console.log('Initializing server...');
@@ -103,38 +102,22 @@ const init = async () => {
     // Perform database initialization tasks
     console.log('Initializing database...');
     let SQL = `
-      DROP TABLE IF EXISTS notes;
-      DROP TABLE IF EXISTS categories;
-      CREATE TABLE categories(
+      DROP TABLE IF EXISTS employees;
+      DROP TABLE IF EXISTS departments;
+      CREATE TABLE departments (
         id SERIAL PRIMARY KEY,
         name VARCHAR(100)
       );
-      CREATE TABLE notes(
+      CREATE TABLE employees (
         id SERIAL PRIMARY KEY,
-        created_at TIMESTAMP DEFAULT now(),
-        updated_at TIMESTAMP DEFAULT now(),
-        ranking INTEGER DEFAULT 3 NOT NULL,
-        txt VARCHAR(255) NOT NULL,
-        category_id INTEGER REFERENCES categories(id) NOT NULL
+        name VARCHAR(100),
+        department_id INTEGER REFERENCES departments(id)
       );
+      INSERT INTO departments (name) VALUES ('HR'), ('Finance'), ('IT');
+      INSERT INTO employees (name, department_id) VALUES ('John Megaball', 1), ('Xiaojia Chin', 2), ('Tiffany Newin', 3);
     `;
     await client.query(SQL);
-    console.log('Tables created');
-
-    // Seed the database with initial data
-    console.log('Seeding data...');
-    SQL = `
-      INSERT INTO categories(name) VALUES('SQL');
-      INSERT INTO categories(name) VALUES('Express');
-      INSERT INTO categories(name) VALUES('Shopping');
-      INSERT INTO notes(txt, ranking, category_id) VALUES('learn express', 5, (SELECT id FROM categories WHERE name='Express'));
-      INSERT INTO notes(txt, ranking, category_id) VALUES('add logging middleware', 5, (SELECT id FROM categories WHERE name='Express'));
-      INSERT INTO notes(txt, ranking, category_id) VALUES('write SQL queries', 4, (SELECT id FROM categories WHERE name='SQL'));
-      INSERT INTO notes(txt, ranking, category_id) VALUES('learn about foreign keys', 4, (SELECT id FROM categories WHERE name='SQL'));
-      INSERT INTO notes(txt, ranking, category_id) VALUES('buy a quart of milk', 2, (SELECT id FROM categories WHERE name='Shopping'));
-    `;
-    await client.query(SQL);
-    console.log('Data seeded');
+    console.log('Tables created and sample data inserted');
 
     // Start the Express server
     console.log('Starting server...');
@@ -146,6 +129,7 @@ const init = async () => {
     process.exit(1); // Exit with non-zero status code to indicate failure
   }
 };
+
 
 // Invoke the init function to start the server
 init();
