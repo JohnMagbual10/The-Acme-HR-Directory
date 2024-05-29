@@ -27,17 +27,22 @@ async function fetchDepartmentsFromDatabase() {
 
 // Function to create employee in the database
 async function createEmployeeInDatabase(name, department_id) {
-  // Implement your database query logic here
+  const query = 'INSERT INTO employees (name, department_id) VALUES ($1, $2) RETURNING *';
+  const result = await client.query(query, [name, department_id]);
+  return result.rows[0];
 }
 
 // Function to delete employee from the database
 async function deleteEmployeeFromDatabase(id) {
-  // Implement your database query logic here
+  const query = 'DELETE FROM employees WHERE id = $1';
+  await client.query(query, [id]);
 }
 
 // Function to update employee in the database
 async function updateEmployeeInDatabase(id, name, department_id) {
-  // Implement your database query logic here
+  const query = 'UPDATE employees SET name = $1, department_id = $2 WHERE id = $3 RETURNING *';
+  const result = await client.query(query, [name, department_id, id]);
+  return result.rows[0];
 }
 
 // Define your routes here
@@ -70,7 +75,6 @@ app.post('/api/employees', async (req, res, next) => {
   try {
     const { name, department_id } = req.body;
     // Insert the new employee into the database
-    // Replace this with your actual database query
     const createdEmployee = await createEmployeeInDatabase(name, department_id);
     res.json(createdEmployee);
   } catch (error) {
@@ -84,7 +88,6 @@ app.delete('/api/employees/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
     // Delete the employee from the database
-    // Replace this with your actual database query
     await deleteEmployeeFromDatabase(id);
     res.sendStatus(204);
   } catch (error) {
@@ -99,7 +102,6 @@ app.put('/api/employees/:id', async (req, res, next) => {
     const { id } = req.params;
     const { name, department_id } = req.body;
     // Update the employee in the database
-    // Replace this with your actual database query
     const updatedEmployee = await updateEmployeeInDatabase(id, name, department_id);
     res.json(updatedEmployee);
   } catch (error) {
